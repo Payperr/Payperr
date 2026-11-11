@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#cfcab9">
+<meta name="color-scheme" content="light">
+<title>Payper · a paper-trading record on live market data</title>
+<meta name="description" content="Paper trading on live DexScreener data for Solana tokens. Rule-based agents vote; a paper trade is recorded only when a quorum forms and every risk check passes. Virtual USD only.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Payper · a paper-trading record on live market data">
+<meta property="og:description" content="Paper trading on live DexScreener data for Solana tokens. Rule-based agents vote; a paper trade is recorded only when a quorum forms and every risk check passes. Virtual USD only.">
+<link rel="icon" href="/img/mark.svg">
+<link rel="stylesheet" href="/css/greenbar.css">
+</head>
+<body>
+<a class="skip" href="#pages">Skip to content</a>
+<aside class="side" id="side" aria-label="Primary">
+  <div class="side-top">
+    <a class="brand" href="/" data-go="desk"><span id="brand-logo"></span><span class="brand-t"><b id="brand-name"></b><span id="brand-sym"></span></span></a>
+    <button class="icon-btn side-close" id="side-close" aria-label="Close menu">✕</button>
+  </div>
+  <nav class="nav" id="nav" aria-label="Pages"></nav>
+  <div class="side-foot">
+    <div class="mode-card" id="mode-card" role="status"></div>
+    <div class="paper-flag" role="note"><b>PAPER TRADING</b>virtual USD only · no wallet · no real orders</div>
+    <div class="ro-ctl" id="ro-ctl" role="note" hidden>Public site · read-only. Desk controls are off.</div>
+    <span id="socials" class="socials"></span>
+  </div>
+</aside>
+<div class="scrim" id="scrim" hidden></div>
+<div class="app">
+<header class="top">
+  <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu" aria-controls="side" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+  <div class="top-t"><h1 id="pg-title">—</h1><p id="pg-sub"></p></div>
+  <div class="stamp" role="note" aria-label="Paper trading: virtual money only">PAPER<small>VIRTUAL USD · NOT REAL MONEY</small></div>
+  <div class="top-r">
+    <span class="mixed" id="mixed" hidden role="status"></span>
+    <span class="feedpill" id="feed" role="status" title="Market feed status">FEED —</span>
+    <button class="btn sm" id="ctl-pause" title="Pause or resume new paper buys">Pause buys</button>
+    <span class="clock" id="clock">—</span>
+    <span class="state" id="state" role="status" aria-live="polite"><i aria-hidden="true"></i><b id="state-t">connecting</b></span>
+  </div>
+</header>
+<div class="runline"><span>Payper · paper desk</span><span id="run-pg">Report 01 · Desk</span><span id="run-date">—</span><span id="run-no">Page 001</span></div>
+<div class="ro-note" id="ro-note" role="note" hidden><b>SHARED DEMONSTRATION · READ-ONLY</b> One <b>paper</b> account in virtual USD, the same for every visitor. It is <b>not your wallet</b>. Nothing here can be changed from the web, and there is no wallet sign-in. To define your own agents, run Payper on your own computer.</div>
+<section class="token" id="token" aria-labelledby="token-h">
+  <span class="token-k" id="token-h">PAYPER token</span>
+  <span class="token-s" title="No token address is configured on this site" id="token-state">NOT LAUNCHED YET</span>
+  <span class="token-b" id="token-body">No token address has been published on this site. Verify the official address before trading.</span>
+  <span class="token-act" id="token-act" hidden><code id="token-mint"></code><button class="btn sm" id="token-copy" type="button">Copy address</button><a class="btn sm" id="token-pump" target="_blank" rel="noopener noreferrer">View on pump.fun ↗</a></span>
+  <small class="token-n" id="token-note">Payper makes no promise of earnings, fees or a share in any token.</small>
+</section>
+<div class="banner" id="banner" role="alert" hidden></div>
+
+<main id="pages">
+<!-- DESK -->
+<section class="pg is-on" id="pg-desk" aria-labelledby="pg-title">
+  <div class="sumband" id="kpis" aria-label="Desk summary"></div>
+
+  <section class="group" aria-labelledby="h-pipe">
+    <header class="gh"><h2 id="h-pipe" data-c="desk.pipelineTitle">Decision path</h2><span class="sub" data-c="desk.pipelineSub"></span><span class="src" data-src="stream"></span></header>
+    <ol class="pipe" id="pipe"></ol>
+  </section>
+
+  <div class="deskgrid">
+    <section class="pn stagewrap" aria-labelledby="h-core">
+      <div class="ph"><h3 id="h-core" data-c="desk.strategies">Strategy families</h3><span class="sub" data-c="desk.dialHint"></span><button class="btn sm" id="dl-x" hidden>Clear filter ×</button><span class="src" data-src="stream"></span></div>
+      <div class="stage" id="stage">
+        <canvas id="ring" role="img" aria-label="Printed wheel of strategy families: one hatched segment per family, sized by its number of agents. Select a segment to filter votes; the Families list below offers the same filter from the keyboard."></canvas>
+        <div class="st-l"><b id="st-agents">0</b> agents · <b id="st-lins">0</b> families<br><span id="st-rule"></span></div>
+        <div class="st-r">FIG. 1 · FAMILY REGISTER<br><span id="st-fps">segment size = agents</span></div>
+        <div class="dl-sel" id="dl-sel" aria-live="polite"></div>
+        <div class="hero" id="hero"><b id="hero-sym">—</b><span id="hero-s">awaiting the first market poll</span></div>
+        <div class="trade" id="trade" role="status"><b id="tr-k">BUY</b><span id="tr-s">—</span></div>
+        <div class="dtip" id="dtip" hidden></div>
+        <div class="qc" id="qc" hidden>
+          <div class="qc-h"><div class="qc-t"><b id="qc-sym">—</b><span id="qc-q" class="sub"></span></div><span class="kl">Price (USD)</span><b id="qc-mc">—</b><button class="qc-close" id="qc-close" aria-label="Close chart">×</button></div>
+          <canvas id="qc-c"></canvas>
+          <div class="qc-meta" id="qc-meta"></div>
+        </div>
+      </div>
+      <div class="decisions">
+        <div class="co" id="co-prop"><div class="ct"><span class="stp">01</span>VOTE · <b id="cp-sym">—</b></div><div class="cs" id="cp-s">no vote yet</div><div class="cb" id="cp-b"></div></div>
+        <div class="co" id="co-claim"><div class="ct"><span class="stp">02</span>CONDITIONS <b id="cc-v">—</b></div><div class="cs" id="cc-s">each agent tests its rule against the latest quote</div><div class="cb" id="cc-b"></div></div>
+        <div class="co" id="co-q"><div class="ct"><span class="stp">03</span>QUORUM <b id="cq-v">—</b></div><div class="cs" id="cq-s">no quorum yet</div><div class="cb" id="cq-b"></div></div>
+        <div class="co" id="co-risk"><div class="ct"><span class="stp">04</span>RISK <b id="cr-v">—</b></div><div class="cs" id="cr-s">fixed checks, run before any paper order</div><div class="cb" id="cr-b"></div></div>
+      </div>
+    </section>
+    <div class="rc">
+      <section class="pn"><div class="ph"><h3>Tokens in play</h3><span class="sub" id="play-n">0</span><span class="src" data-src="market"></span></div><ul class="plist" id="play-list"></ul><div class="empty" id="play-empty">Awaiting the first quotes.</div></section>
+      <section class="pn"><div class="ph"><h3>Evidence matrix</h3><span class="sub">latest rule tests, newest first</span><span class="src" data-src="stream"></span></div><div class="mx" id="mx"></div><div class="mxk"><i aria-hidden="true"></i>condition held · <i class="f" aria-hidden="true">×</i>failed · <i class="m" aria-hidden="true">?</i>no data · rows: agent checks, newest first · columns: conditions</div></section>
+      <section class="pn"><div class="ph"><h3>Open paper positions</h3><span class="sub" id="op-n"></span><span class="src" data-src="paper"></span></div><ul class="mlist" id="op-list"></ul><div class="empty" id="op-empty">No open paper positions.</div></section>
+    </div>
+    <section class="pn fams"><div class="ph"><h3>Families</h3><span class="sub" id="fam-n"></span></div>
+      <div class="fh"><span></span><span>family</span><span class="n">agents</span><span class="n">votes</span><span class="n">pass</span></div>
+      <ul class="famlist" id="fam-list" aria-label="Strategy families: press Enter or Space to filter by a family"></ul></section>
+  </div>
+
+  <section class="group" aria-labelledby="h-mkt">
+    <header class="gh"><h2 id="h-mkt">Market pulse</h2><span class="sub">tracked tokens · latest DexScreener poll</span><span class="src" data-src="market"></span></header>
+    <div class="mkt" id="mkt"></div>
+  </section>
+
+  <section class="group" aria-labelledby="h-act">
+    <header class="gh"><h2 id="h-act">Activity and record</h2></header>
+    <div class="low">
+      <section class="pn"><div class="ph"><h3>Live log</h3><span class="src" data-src="stream"></span><div class="seg" id="fd-seg" role="group" aria-label="Filter log"><button data-f="" class="is-on" aria-pressed="true">All</button><button data-f="prop" aria-pressed="false">Votes</button><button data-f="q" aria-pressed="false">Quorums</button><button data-f="trade" aria-pressed="false">Paper fills</button></div></div><ul class="log" id="log" aria-live="off"></ul><div class="empty" id="log-empty">Nothing recorded yet. Entries appear when agents agree.</div></section>
+      <section class="pn"><div class="ph"><h3>Paper trades</h3><span class="sub">simulated fills · virtual USD</span><span class="src" data-src="paper"></span></div>
+        <div class="th"><span>time</span><span>what</span><span>coin</span><span class="n">USD</span><span class="n">P&amp;L $</span><span>fill</span></div><ul class="trl" id="trl"></ul><div class="empty" id="trl-empty">No paper trades yet. One is recorded when a quorum forms and every risk check passes.</div></section>
+      <section class="pn"><div class="ph"><h3>Paper equity</h3><span class="sub" id="eq-sub">estimated exit value after fees + slippage</span><span class="src" data-src="paper"></span></div>
+        <canvas id="pnl" class="pnl" role="img" aria-label="Paper account equity over time"></canvas>
+        <div class="gauges"><div class="ga"><canvas id="g-exp" aria-hidden="true"></canvas><div><span class="kl">Exposure</span><b id="g-exp-v">—</b></div></div><div class="ga"><canvas id="g-buy" aria-hidden="true"></canvas><div><span class="kl">Buys last 60 min</span><b id="g-buy-v">—</b></div></div><div class="ga"><canvas id="g-day" aria-hidden="true"></canvas><div><span class="kl" id="g-day-k">Today's loss / limit</span><b id="g-day-v">—</b></div></div></div>
+        <a class="verdict" href="/proof" data-go="proof"><span class="kl">Proof</span><span>every quorum, its evidence and the risk decision</span><i class="go" aria-hidden="true">→</i></a></section>
+    </div>
+  </section>
+</section>
+
+<!-- PROOF -->
+<section class="pg" id="pg-proof">
+  <div class="pn"><div class="ph"><h3>Quorums</h3><span class="src" data-src="quorums"></span><div class="seg" id="pf-seg"><button data-f="" class="is-on">All</button><button data-f="buy">Ordered</button><button data-f="skip">Denied</button></div></div><div class="pf-tot" id="pf-tot"></div><ul class="pfl" id="pf-list"></ul><div class="empty" id="pf-empty">No quorum has formed yet. On a quiet market, that is expected.</div></div>
+  <div class="pn"><div class="ph"><h3 id="pf-title">Select a quorum</h3><span class="sub" id="pf-when"></span></div><div class="pf-body" id="pf-body"><div class="empty">Select a quorum to read which agents voted, each condition with its observed value and source, the quote age, every risk check and the resulting paper order.</div></div></div>
+</section>
+
+<!-- BACKTEST -->
+<section class="pg" id="pg-backtest">
+  <div class="pn"><div class="ph"><h3>Backtest</h3><span class="src" data-src="backtest"></span></div><div class="explain" id="why-backtest"></div></div>
+</section>
+
+<!-- AGENTS -->
+<section class="pg" id="pg-agents">
+  <div class="pn"><div class="ph"><h3>Build an agent</h3><span class="sub" id="bl-slots">—</span><span class="src" data-src="agents"></span></div>
+    <div class="scroll"><div class="bl">
+      <p class="lead">An agent is a set of conditions on metrics the market feed reports. When every condition holds on a recently retrieved quote, it <b>votes</b> as the “Your agents” family, in the same quorum as the built-in agents. Trade size and exits apply to the whole desk and are set in <code>paper.config.json</code>.</p>
+      <div class="row"><input class="txt" id="bl-name" placeholder="Agent name" maxlength="32" aria-label="Agent name"><button class="btn" id="bl-new">New</button></div>
+      <div class="tpl" id="bl-tpl"></div>
+      <div class="kl">Votes only when all of these hold</div><div id="bl-conds"></div><button class="btn" id="bl-add">+ Condition</button>
+      <div class="bl-line" id="bl-line"></div>
+      <div class="match"><b id="bl-match">—</b><span class="sub" id="bl-match-s">tracked tokens match right now</span></div>
+      <div class="err" id="bl-err" role="alert"></div>
+      <button class="btn acc" id="bl-save">Save and start voting</button>
+      <details class="note"><summary>Metrics not available, and why</summary><ul id="bl-unsup"></ul></details>
+    </div></div></div>
+  <div class="agmid">
+    <div class="pn"><div class="ph"><h3>Your agents</h3><span class="src" data-src="agents"></span></div>
+      <div class="scroll"><table><thead><tr><th>Agent</th><th>Status</th><th class="n">Votes</th><th class="n">Quorums</th><th class="n">Paper fills</th><th class="n">Attrib. P&amp;L $</th><th style="width:130px"></th></tr></thead><tbody id="mb-rows"></tbody></table><div class="empty" id="mb-empty">No agents yet. Define one with the form on this page.</div></div></div>
+    <div class="pn"><div class="ph"><h3>Holder agents</h3><span class="src" data-src="holders"></span></div><div class="explain">Holder agents run on third-party hosted platforms. Payper does not connect to any of them.</div></div>
+  </div>
+  <div class="pn"><div class="ph"><h3>Every agent</h3><span class="src" data-src="agents"></span><span class="sub" id="ea-sub"></span></div>
+    <div class="tool pad"><select id="ea-fam" aria-label="Family filter"><option value="">every family</option></select><input class="search" id="ea-q" placeholder="Agent, family or rule"></div>
+    <div class="scroll"><table><thead><tr><th>Agent · rule</th><th style="width:150px">Family · reads</th><th class="n" style="width:70px">Checks</th><th class="n" style="width:60px">Votes</th><th class="n" style="width:66px">Quorums</th><th class="n" style="width:70px">Missing data</th><th class="n" style="width:90px">Attrib. P&amp;L $</th></tr></thead><tbody id="ea-rows"></tbody></table></div>
+    <p class="note pad">“Attrib. P&amp;L” divides the realized P&amp;L of each closed paper trade equally among the agents that voted for it. Paper figures only.</p></div>
+</section>
+
+<!-- NARRATIVES -->
+<section class="pg" id="pg-narr">
+  <div class="pn"><div class="ph"><h3>Narratives</h3><span class="src" data-src="metas"></span></div><div class="explain" id="why-narr"></div></div>
+</section>
+
+<!-- DEV HUNT -->
+<section class="pg" id="pg-devhunt">
+  <div class="pn"><div class="ph"><h3>Dev hunt</h3><span class="src" data-src="devhunt"></span></div><div class="explain" id="why-devhunt"></div></div>
+</section>
+
+<!-- LAB -->
+<section class="pg" id="pg-lab">
+  <div class="pn"><div class="ph"><h3>Lab</h3><span class="src" data-src="lab"></span></div><div class="explain" id="why-lab"></div></div>
+</section>
+
+<!-- LEDGER -->
+<section class="pg" id="pg-ledger">
+  <div class="gh pagehead"><span class="src" data-src="paper"></span></div>
+  <div class="tiles" id="led-tiles"></div>
+  <div class="pn"><div class="ph"><div class="tool" id="led-kinds"></div><div class="tool"><input class="search" id="led-q" placeholder="Token, agent or note"><button class="btn" id="led-csv">Export CSV</button></div></div>
+    <div class="scroll"><table><thead><tr><th style="width:150px">Time</th><th style="width:110px">What</th><th style="width:150px">Who</th><th style="width:100px">Coin</th><th class="n" style="width:100px">USD</th><th class="n" style="width:90px">P&amp;L $</th><th>Note</th></tr></thead><tbody id="led-rows"></tbody></table></div>
+    <p class="note pad">Every row is a PAPER entry. Amounts are virtual USD; fills are simulated estimates, not executions. No row has an on-chain transaction.</p></div>
+</section>
+
+<!-- PAPER ACCOUNT (route id kept as "wallets") -->
+<section class="pg" id="pg-wallets">
+  <div class="gh pagehead"><span class="src" data-src="paper"></span></div>
+  <div class="tiles" id="acct-tiles"></div>
+  <div class="pn"><div class="ph"><h3>Controls</h3><span class="sub" id="ctl-state"></span></div>
+    <div class="ctl-row"><button class="btn" id="ctl-pause2">Pause new buys</button><button class="btn danger" id="ctl-reset">Reset paper account…</button><span class="note">Pausing stops new paper buys; exits on open positions continue. Reset clears positions, the ledger and quorum history, keeps your agents, and asks for confirmation.</span></div></div>
+  <div class="pn"><div class="ph"><h3>Open paper positions</h3><span class="src" data-src="paper"></span></div>
+    <div class="scroll"><table><thead><tr><th>Coin</th><th>Opened</th><th class="n">Qty</th><th class="n">Entry (sim.)</th><th class="n">Mark</th><th>Mark age</th><th class="n">Cost $</th><th class="n">Est. exit $</th><th class="n">Unreal. $</th><th>TP steps</th><th>Market</th></tr></thead><tbody id="pos-rows"></tbody></table><div class="empty" id="pos-empty">No open paper positions.</div></div></div>
+  <div class="pn"><div class="ph"><h3>Pending paper orders</h3><span class="src" data-src="paper"></span></div>
+    <div class="scroll"><table><thead><tr><th>Side</th><th>Coin</th><th>Decided</th><th class="n">Decision price</th><th>Reason</th><th class="n">Polls waited</th></tr></thead><tbody id="pend-rows"></tbody></table><div class="empty" id="pend-empty">No pending orders. An order fills at the next newer quote, at the worse of the decision price and that quote.</div></div></div>
+  <div class="pn"><div class="ph"><h3>Closed paper positions</h3><span class="src" data-src="paper"></span></div>
+    <div class="scroll"><table><thead><tr><th>Coin</th><th>Opened</th><th>Closed</th><th class="n">Cost $</th><th class="n">Realized $</th><th class="n">Return</th></tr></thead><tbody id="cl-rows"></tbody></table><div class="empty" id="cl-empty">No closed paper positions yet.</div></div></div>
+  <div class="pn"><div class="ph"><h3>Desk settings in effect</h3><span class="sub">from paper.config.json</span></div><div class="lanegrid" id="lanegrid"></div><p class="note pad" id="fill-model"></p></div>
+  <div class="pn"><div class="ph"><h3>On-chain wallets</h3><span class="src" data-src="chain"></span></div><div class="explain">Paper trading uses no wallet. This site does not ask for a wallet address, seed phrase or private key, and sends no transactions.</div></div>
+</section>
+</main>
+<footer class="ft" id="footer" hidden></footer>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<dialog id="reset-dlg" aria-labelledby="reset-h"><form method="dialog"><h3 id="reset-h">Reset the paper account?</h3><p>This clears every paper position, pending order, ledger entry and quorum record, and returns virtual cash to the starting amount. Your agents are kept. Type <b>RESET</b> to confirm.</p><input id="reset-in" class="txt" autocomplete="off" aria-label="Type RESET to confirm"><div class="ctl-row"><button class="btn" value="cancel">Cancel</button><button class="btn danger" id="reset-go" value="ok">Reset</button></div></form></dialog>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>
