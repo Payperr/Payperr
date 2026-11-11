@@ -1,0 +1,36 @@
+# Render Blueprint for the Payper public read-only site (OPTIONAL: you can also click through
+# the Render Dashboard by hand, see docs/DEPLOY.md). Render reads this file from your Git repo.
+#
+# Written against https://render.com/docs/blueprint-spec (read 11 Nov 2026) and checked against
+# Render's published JSON schema. It was NOT validated with the Render CLI or applied to any account.
+#
+# Cost (Render pricing page, 11 Nov 2026; confirm before paying): web service 0.5c-512mb ("Starter")
+# $7/month + 1 GB disk at $0.25/GB/month = about $7.25/month on the Hobby workspace plan ($0 + compute),
+# 5 GB bandwidth/month included, then $0.15/GB. Taxes are not included.
+#
+# NOT in this file on purpose (add them in the Dashboard > your service > Environment):
+#   TOKEN_MINT     the PAYPER contract address, only once the token really exists (docs/CONTRACT-ADDRESS.md)
+#   PUBLIC_ORIGIN  only if you add your own domain; otherwise the service's own
+#                  https://<name>.onrender.com address (RENDER_EXTERNAL_URL) is used automatically
+# Render keeps Dashboard environment variables that are not listed here when the Blueprint syncs.
+services:
+  - type: web
+    name: payper
+    runtime: node
+    plan: 0.5c-512mb          # paid plan: required for a persistent disk. Never "free" (it sleeps and has no disk)
+    # region: singapore       # optional, closest to Asia/Manila; default is oregon. Choose before creating.
+    buildCommand: 'true'      # no npm dependencies, nothing to build
+    startCommand: node server/server.mjs
+    healthCheckPath: /healthz
+    autoDeployTrigger: 'off'  # deploy only when you click "Deploy" (or "Save and deploy")
+    disk:
+      name: payper-data
+      mountPath: /var/data
+      sizeGB: 1               # can be increased later, never decreased
+    envVars:
+      - key: PAYPER_MODE
+        value: public         # read-only: every change is refused, no admin panel
+      - key: DATA_DIR
+        value: /var/data      # must equal the disk mountPath so the shared paper record survives deploys
+      - key: NODE_VERSION
+        value: '24'

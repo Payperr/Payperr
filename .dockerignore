@@ -1,0 +1,10 @@
+data
+tests
+docs
+preview.html
+*.zip
+*.bat
+start.sh
+.git
+node_modules
+.env

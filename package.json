@@ -1,0 +1,12 @@
+{
+  "name": "payper-greenbar",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Payper (PAYPER) Greenbar edition: paper-trading desk on live DexScreener market data, styled as a line-printer report. Virtual money only. No dependencies.",
+  "scripts": {
+    "start": "node server/server.mjs",
+    "test": "node --test tests/units.test.mjs tests/engine.test.mjs tests/server.test.mjs tests/frontend.test.mjs tests/public.test.mjs tests/branding.test.mjs"
+  },
+  "engines": { "node": ">=18" },
+  "license": "UNLICENSED"
+}

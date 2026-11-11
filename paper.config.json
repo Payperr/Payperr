@@ -1,0 +1,96 @@
+{
+  "_readme": "Payper (PAYPER) paper-trading settings. Edit, save, then restart (close the window and double-click START.bat again). Every amount is VIRTUAL US dollars. Nothing here can move real money. See README.md section 'Settings' for each value.",
+  "_contractAddress_help": "PAYPER token contract (mint) address shown on the site. Leave it as \"\" until the token really exists on pump.fun; the site then says NOT LAUNCHED YET. To show it: paste ONLY the address between the quotes, save, restart. On a host (Render), set the TOKEN_MINT environment variable instead; TOKEN_MINT wins over this. See docs/CONTRACT-ADDRESS.md.",
+  "contractAddress": "",
+  "port": 8787,
+  "market": {
+    "pollSeconds": 30,
+    "maxQuoteAgeSeconds": 90,
+    "requestTimeoutMs": 8000,
+    "watchlist": [
+      {
+        "symbol": "SOL",
+        "address": "So11111111111111111111111111111111111111112"
+      },
+      {
+        "symbol": "JUP",
+        "address": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+      },
+      {
+        "symbol": "BONK",
+        "address": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+      },
+      {
+        "symbol": "WIF",
+        "address": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm"
+      },
+      {
+        "symbol": "RAY",
+        "address": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"
+      },
+      {
+        "symbol": "POPCAT",
+        "address": "7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr"
+      },
+      {
+        "symbol": "JTO",
+        "address": "jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL"
+      },
+      {
+        "symbol": "PYTH",
+        "address": "HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3"
+      }
+    ],
+    "discovery": {
+      "enabled": true,
+      "maxTokens": 14,
+      "refreshMinutes": 5,
+      "sources": [
+        "token-boosts-latest",
+        "token-profiles-latest"
+      ]
+    }
+  },
+  "paper": {
+    "startingCashUsd": 10000,
+    "tradeSizeUsd": 100,
+    "reserveUsd": 500,
+    "feeBps": 100,
+    "slippageBps": 150,
+    "priceImpactModel": true,
+    "maxPctOfLiquidity": 2,
+    "flatFeeUsd": 0.5
+  },
+  "quorum": {
+    "minVotes": 3,
+    "minFamilies": 3
+  },
+  "risk": {
+    "minLiquidityUsd": 50000,
+    "maxOpenPositions": 6,
+    "maxExposureUsd": 600,
+    "maxBuysPerHour": 4,
+    "dailyLossLimitUsd": 150,
+    "cooldownMinutes": 60,
+    "dayTimeZone": "Asia/Manila"
+  },
+  "exits": {
+    "takeProfit": [
+      {
+        "atPct": 8,
+        "sellPct": 50
+      },
+      {
+        "atPct": 16,
+        "sellPct": 50
+      }
+    ],
+    "stopLossPct": 6,
+    "trailingPct": 5,
+    "trailingArmPct": 6,
+    "maxHoldMinutes": 240
+  },
+  "agents": {
+    "customSlots": 3
+  }
+}
